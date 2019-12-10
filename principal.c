@@ -8,10 +8,9 @@
 |***************************************/
 
 
-//------------------------------INCLUDE------------------------------//
-#include<stdio.h>
+//-----------------------------INCLUDES------------------------------//
 #include<stdlib.h>
-#include<stdbool.h>
+#include<stdio.h>
 #include<math.h>
 
 
@@ -23,26 +22,26 @@
 
 //-----------------------------FUNCTIONS-----------------------------//
 
-//Calcula valor da funcao num ponto especifico
+// Calcula valor da funcao num ponto especifico
 double value_function(double);
 
-//Calcula valor da segunda derivada da funcao num ponto especifico
+// Calcula valor da segunda derivada da funcao num ponto especifico
 double value_function_seg_der(double x);
 
-//Calcula valor da quarta derivada da funcao num ponto especifico
+// Calcula valor da quarta derivada da funcao num ponto especifico
 double value_function_qua_der(double x);
 
-//Metodo do trapezio, recebe o valor de n como parametro
+// Metodo do trapezio, recebe o valor de n como parametro
 double trapezio(int);
 
-//Retorna o valor de n para que o metodo do trapezio convirja
+// Retorna o valor de n para que o metodo do trapezio convirja
 // com erro menor que o estabelecido
 int getN_Trapezio();
 
-//Metodo do Simpson, recebe o valor de N como parametro
+// Metodo do Simpson, recebe o valor de N como parametro
 double simpson(int);
 
-//Retorna o valor de N para que o metodo de Simpson convirja
+// Retorna o valor de N para que o metodo de Simpson convirja
 // com erro menor que o estabelecido
 int getN_Simpson();
 
@@ -54,8 +53,8 @@ int main() {
 	int n_trap = getN_Trapezio();
 	value_integral = trapezio(n_trap);
 
-	int n_simp = getN_Simpson();
-	value_integral = simpson(n_simp);
+	int N_simp = getN_Simpson();
+	value_integral = simpson(N_simp);
 
 	return 0;
 }
@@ -68,7 +67,7 @@ double value_function(double x) {
 
 
 double value_function_seg_der(double x) {
-	return value_function(x) * (4*pow(x,2) - 2);
+	return 2*value_function(x) * (2*pow(x,2) - 1);
 }
 
 
@@ -79,11 +78,11 @@ double value_function_qua_der(double x) {
 
 //-----------------------------TRAPEZIO------------------------------//
 int getN_Trapezio() {
-	double range = LIMIT_SUP - LIMIT_INF;				// B - A
-	double range_exp3 = pow(range, 3);					// (B - A)^3
-	double erro = pow(10, EXP_ERRO);					// 10^(EXP_ERRO)
-	double MAX_SEG_DER = sqrt(6) / 2.0;					// MAX|f''(x)|
-	double max_func = value_function_seg_der(MAX_SEG_DER);
+	double range = LIMIT_SUP - LIMIT_INF;		// B - A
+	double range_exp3 = pow(range, 3);			// (B - A)^3
+	double erro = pow(10, EXP_ERRO);			// 10^(EXP_ERRO)
+	double MAX_SEG_DER = 0.0;									// A <= x <= B
+	double max_func = fabs(value_function_seg_der(MAX_SEG_DER));// MAX|f''(x)|
 
 	double A = max_func * range_exp3;
 	double B = 12.0 * erro;
@@ -100,16 +99,16 @@ double trapezio(int n) {
 	double value_integral;
 
 	for (int i = 0; i <= n; i++) {
-		x = (h * i) + LIMIT_INF;				// x = (i * passo) + A
-		y = value_function(x);					// y = f(x)
-		soma += (!i || i == n) ? y : 2 * y;		// i(extremos)	-> soma +y
-	}											// senao i		-> soma +2y
-	value_integral = (soma * h) / 2.0;			// (h / 2) * soma
+		x = (h * i) + LIMIT_INF;			// x = (i * passo) + A
+		y = value_function(x);				// y = f(x)
+		soma += (!i || i == n) ? y : 2 * y;	// i(extremos)	-> soma +y
+	}										// senao i		-> soma +2y
+	value_integral = (soma * h) / 2.0;		// (h / 2) * soma
 
-	printf("|----- METODO TRAPEZIO -----|\n");
-	printf("| n (subdiv)\t%12d|\n", n);
-	printf("| h (passo)\t%.10f|\n", h);
-	printf("| Valor aprox\t%.10f|\n\n", value_integral);
+	printf("|------- METODO TRAPEZIO -------|\n");
+	printf("| n (subdiv)\t%16d|\n", n);
+	printf("| h (passo)\t%.14f|\n", h);
+	printf("| Valor aprox\t%.14f|\n\n", value_integral);
 
 	return value_integral;
 }
@@ -117,11 +116,11 @@ double trapezio(int n) {
 
 //------------------------------SIMPSON------------------------------//
 int getN_Simpson() {
-	double range = LIMIT_SUP - LIMIT_INF;			// B - A
-	double range_exp5 = pow(range, 5);				// (B - A)^5
-	double erro = pow(10, EXP_ERRO);				// 10^(EXP_ERRO)
-	double MAX_QUA_DER = 0.0;						// MAX|f''''(x)|
-	double max_func = value_function_qua_der(MAX_QUA_DER);
+	double range = LIMIT_SUP - LIMIT_INF;		// B - A
+	double range_exp5 = pow(range, 5);			// (B - A)^5
+	double erro = pow(10, EXP_ERRO);			// 10^(EXP_ERRO)
+	double MAX_QUA_DER = 0.0;									// A <= x <= B
+	double max_func = fabs(value_function_qua_der(MAX_QUA_DER));// MAX|f''''(x)|
 
 	double A = range_exp5 * max_func;
 	double B =  pow(2, 5) * 180.0 * erro;
@@ -145,11 +144,11 @@ double simpson(int N) {
 	}														// i(par)		-> soma +2y
 	value_integral = (soma * h) / 3.0;						// (h/3)*soma
 
-	printf("|---- METODO DE SIMPSON ----|\n");
-	printf("| N (grau)\t%12d|\n", N);
-	printf("| n (subdiv)\t%12d|\n", n);
-	printf("| h (passo)\t%.10f|\n", h);
-	printf("| Valor aprox\t%.10f|\n\n", value_integral);
+	printf("|------ METODO DE SIMPSON ------|\n");
+	printf("| N (grau)\t%16d|\n", N);
+	printf("| n (subdiv)\t%16d|\n", n);
+	printf("| h (passo)\t%.14f|\n", h);
+	printf("| Valor aprox\t%.14f|\n\n", value_integral);
 
 	return value_integral;
 }
