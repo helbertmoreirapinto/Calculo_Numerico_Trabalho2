@@ -8,7 +8,7 @@
 |***************************************/
 
 
-//-----------------------------------------------------INCLUDE------------------------------------------------------//
+//------------------------------INCLUDE------------------------------//
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
@@ -21,28 +21,38 @@
 
 
 
-//-----------------------------------------------------FUNCTIONS----------------------------------------------------//
-int trapezio(int);
+//-----------------------------FUNCTIONS-----------------------------//
+//Calcula valor da funcao num ponto especifico
+double value_function(double);
+
+//Metodo do trapezio, recebe o valor de n como parametro
+double trapezio(int);
+
+//Retorna o valor de n para que o metodo do trapezio convirja
+//para um valor menor que o erro estabelecido
 int getN_Trapezio();
-int simpson(int);
+
+//Metodo do Simpson, recebe o valor de n como parametro
+double simpson(int);
+
+//Retorna o valor de n para que o metodo de Simpson convirja
+// para um valor menor que o erro estabelecido
 int getN_Simpson();
 
-
-//-------------------------------------------------------MAIN-------------------------------------------------------//
+//-------------------------------MAIN--------------------------------//
 int main() {
-	int value_integral;
+	double value_integral;
 	
 	int n_trap = getN_Trapezio();
 	value_integral = trapezio(n_trap);
-	
-	int n_simp = getN_Simpson();
-	value_integral = trapezio(n_simp);
-	
 	return 0;
 }
 
+double value_function(double x) {
+	return exp(-pow(x, 2));
+}
 
-//-----------------------------------------------------TRAPEZIO-----------------------------------------------------//
+//-----------------------------TRAPEZIO------------------------------//
 int getN_Trapezio() {
 	double range = LIMIT_SUP - LIMIT_INF;
 	double range_exp3 = pow(range, 3);
@@ -53,16 +63,39 @@ int getN_Trapezio() {
 	return ++n;
 }
 
-int trapezio(int n) {
-	return 0;
+
+double trapezio(int n) {
+	double h = (double)(LIMIT_SUP - LIMIT_INF) / n;
+	double x, y;
+	double soma = 0;
+	double value_integral;
+	
+
+	for (int i = 0; i <= n; i++) {
+		x = (h * i) + LIMIT_INF;
+		y = value_function(x);
+		if (!i || i == n) {
+			soma += y;
+		} else {
+			soma += 2 * y;
+		}
+	}
+	value_integral = (double)soma * (h / 2);
+
+	printf("METODO TRAPEZIO\n");
+	printf("n (subdivisoes) = %d\n", n);
+	printf("h (passo)  = %.8f\n", h);
+	printf("Valor aproximado = %.8f\n", value_integral);
+
+	return value_integral;
 }
 
 
-//------------------------------------------------------SIMPSON----------------------------------------------------//
+//------------------------------SIMPSON------------------------------//
 int getN_Simpson() {
 	return 0;
 }
 
-int simpson(int n) {
+double simpson(int n) {
 	return 0;
 }
