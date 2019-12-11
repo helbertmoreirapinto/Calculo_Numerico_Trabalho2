@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 /***************************************|
-|		SME0000 - CALCULO NUMERICO		|
+|		SME0602 - CALCULO NUMERICO		|
 |				TRABALHO II				|
 |	INTEGRANTES:		NUSP:			|
 |	HELBERT M PINTO		10716504		|
